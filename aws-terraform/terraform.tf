@@ -37,3 +37,11 @@ resource "aws_sqs_queue" "nova-sqs" {
   fifo_queue                  = true
   content_based_deduplication = true
 }
+
+resource "aws_elasticache_cluster" "nova-redis" {
+  cluster_id           = "nova-redis"
+  engine               = "redis"
+  node_type            = "cache.t2.micro"
+  num_cache_nodes      = 1
+  port                 = 6379
+}
