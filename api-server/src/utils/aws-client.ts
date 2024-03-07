@@ -36,3 +36,28 @@ export function getAWSQueueURL(){
 	return process.env.AWS_SQS_URL;
 }
 
+export function getAWS_ECS_CLUSTER(){
+	if( process.env.AWS_ECS_CLUSTER == undefined || process.env.AWS_ECS_CLUSTER == '' ){
+		throw new Error('AWS_ECS_CLUSTER is not defined');
+	}
+	return process.env.AWS_ECS_CLUSTER;
+}
+
+export function getAWS_ECS_TASK_DEFINITION(){
+	if( process.env.AWS_ECS_TASK_DEFINITION == undefined || process.env.AWS_ECS_TASK_DEFINITION == '' ){
+		throw new Error('AWS_ECS_TASK_DEFINITION is not defined');
+	}
+	return process.env.AWS_ECS_TASK_DEFINITION;
+}
+
+export function getAWS_ECS_SUBNETS_SG() {
+	if( process.env.AWS_ECS_SUBNETS == undefined || process.env.AWS_ECS_SUBNETS == '' ){
+		throw new Error('AWS_ECS_SUBNETS is not defined');
+	}
+
+	if( process.env.AWS_ECS_SECURITY_GROUP == undefined || process.env.AWS_ECS_SECURITY_GROUP == '' ){
+		throw new Error('AWS_ECS_SECURITY_GROUP is not defined');
+	}
+	return {subnets:process.env.AWS_ECS_SUBNETS.split(','), securityGroups:process.env.AWS_ECS_SECURITY_GROUP.split(',')};
+}
+

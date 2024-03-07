@@ -1,59 +1,72 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { generateSlug } from 'random-word-slugs';
-import simpleGit from 'simple-git';
-import { uploadS3 } from './utils/s3-util';
-import { getAllFiles } from './utils/utils';
-import path from 'path';
 import { sendSQS } from './utils/sqs-util';
+import { Server } from 'socket.io';
 import Redis from 'ioredis';
+import { runTask } from './utils/ecs-client';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-const redis = new Redis();
-app.listen(3000, () => {
-	console.log('Server is running on port 3000');
+
+const SOCKET_PORT = 9002;
+const SERVER_PORT = 9000;
+
+// const subscriber = new Redis({
+// 	host: 'localhost',
+// 	port: 6379,
+// });
+
+// const io = new Server({ cors: { origin: '*' } });
+
+// io.on('connection', (socket) => {
+// 	socket.on('subscribe', (channel) => {
+// 		socket.join(channel);
+// 		socket.emit('subscribed', channel);
+// 	});
+// });
+
+// io.listen(SOCKET_PORT);
+// console.log(`Socket.io listening on port ${SOCKET_PORT}`);
+
+app.listen(SERVER_PORT, () => {
+	console.log(`API Server listening on port ${SERVER_PORT}`);
 });
+
 
 app.get('/', (req: Request, res: Response) => {
 	res.send('Hello World');
 });
 
-app.post('/upload', async (req: Request, res: Response) => {
-	const repoURL = req.body.repoURL;
-	const slug = generateSlug();
-	const id = slug + '-' + Date.now().toString();
+app.post('/project', async (req: Request, res: Response) => {
+	const { gitURL } = req.body;
 
-	await simpleGit().clone(repoURL, path.join(__dirname, `output/${id}`));
-
-	let files = getAllFiles(path.join(__dirname, `output/${id}`));
-
-	for (const file of files) {
-		await uploadS3(file.slice(__dirname.length + 1), file);
+	if (!gitURL) {
+		return res.status(400).json({ Error: 'gitURL is required' });
 	}
 
-    const response = sendSQS(id, { id: id, status: 'uploaded' }, 'upload');
+	const projectSlug = generateSlug();
 
-    if (response instanceof Error) {
-        console.error('Error sending message to SQS:', response);
-        res.status(500).json({ error: 'Error sending message to SQS' });
-    }
+	try {
+		await runTask(gitURL, projectSlug);
+	} catch (e) {
+		return res.status(500).json({ Error: `Error running task ${e}` });
+	}
 
-    // return the id of the upload back to user
-	res.json({ id: id });
-	redis.set(id, 'uploaded');
-});
-
-app.get('/status', (req: Request, res: Response) => {
-	const id = req.query.id as string;
-	redis.get(id, (err, reply) => {
-		if (err) {
-			console.error('Error getting status from Redis:', err);
-			res.status(500).json({ error: 'Error getting status from Redis' });
-		} else {
-			res.json({ id: id, status: reply });
-		}
+	return res.json({
+		status: 'queued',
+		data: { projectSlug, url: `http://${projectSlug}.localhost:8000` },
 	});
 });
+
+// async function initRedisSubscribe() {
+// 	console.log('Subscribed to logs....');
+// 	subscriber.psubscribe('logs:*');
+// 	subscriber.on('pmessage', (pattern, channel, message) => {
+// 		io.to(channel).emit('message', message);
+// 	});
+// }
+
+// initRedisSubscribe();

@@ -1,7 +1,7 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import {getAWSBucketName, getAWSCredentials, getAWSRegion} from "./aws-client";
+import { getAWSBucketName, getAWSCredentials, getAWSRegion } from "./aws-client";
 dotenv.config();
 
 export const client = new S3Client({

@@ -21,27 +21,44 @@ resource "aws_s3_bucket_ownership_controls" "nova-bucket-ownership" {
   }
 }
 
-resource "aws_s3_bucket_acl" "nova-bucket-acl" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.nova-bucket-ownership,
-    aws_s3_bucket_public_access_block.nove-bucket-access
-  ]
-
+resource "aws_s3_bucket_policy" "allow_public_read" {
+  depends_on = [ aws_s3_bucket_public_access_block.nove-bucket-access ]
   bucket = aws_s3_bucket.nova-bucket.id
-  acl    = "public-read"
+  policy = data.aws_iam_policy_document.nova-bucket-policy.json
 }
+
+data "aws_iam_policy_document" "nova-bucket-policy" {
+  statement {
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    actions   = ["s3:GetObject"]
+    resources = [aws_s3_bucket.nova-bucket.arn, "${aws_s3_bucket.nova-bucket.arn}/*"]
+  }
+}
+
+# create ECR repository
+# resource "aws_ecr_repository" "nova_image" {
+#   name                 = "nova-image2"
+#   image_tag_mutability = "MUTABLE"
+
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 
 # sqs queue for user files
-resource "aws_sqs_queue" "nova-sqs" {
-  name                        = "nova-sqs.fifo"
-  fifo_queue                  = true
-  content_based_deduplication = true
-}
+# resource "aws_sqs_queue" "nova-sqs" {
+#   name                        = "nova-sqs.fifo"
+#   fifo_queue                  = true
+#   content_based_deduplication = true
+# }
 
-resource "aws_elasticache_cluster" "nova-redis" {
-  cluster_id           = "nova-redis"
-  engine               = "redis"
-  node_type            = "cache.t2.micro"
-  num_cache_nodes      = 1
-  port                 = 6379
-}
+# resource "aws_elasticache_cluster" "nova-redis" {
+#   cluster_id           = "nova-redis"
+#   engine               = "redis"
+#   node_type            = "cache.t2.micro"
+#   num_cache_nodes      = 1
+#   port                 = 6379
+# }
