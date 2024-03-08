@@ -1,9 +1,13 @@
 
 api-server/.env
 api-server/node_modules/
-api-server/src/output/
+
 deploy-server/node_modules/
 deploy-server/.env
+
+reverse-proxy/node_modules/
+deploy-server/.env
+deploy-server/dist/
 
 aws-terraform/.terraform
 aws-terraform/terraform.tfstate
