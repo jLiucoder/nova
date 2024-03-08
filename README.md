@@ -21,7 +21,6 @@ set up instruction:
    `terraform apply`
    to apply the changes and wait to finish
 3. Filling in the access key and secret access key in deploy-server/index.js, and create a new image and push it to ECR
-
 4. Create cluster with Fargate in ECS
 5. Create new task definition with the uploaded image in ECR
 6. Then everything should be working and setting up.

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.525.0",
+    "@aws-sdk/client-elasticache": "^3.525.0",
     "@aws-sdk/client-s3": "^3.515.0",
     "@aws-sdk/client-sqs": "^3.515.0",
     "@types/mime": "^3.0.4",

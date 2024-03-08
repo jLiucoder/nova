@@ -5,7 +5,7 @@ import {
 	getAWS_ECS_CLUSTER,
 	getAWS_ECS_SUBNETS_SG,
 	getAWS_ECS_TASK_DEFINITION,
-} from './aws-client';
+} from './global-client';
 
 export const client = new ECSClient({
 	region: getAWSRegion(),
@@ -15,7 +15,7 @@ export const client = new ECSClient({
 	},
 });
 
-export async function runTask(gitURL: string, projectSlug: string) {
+export async function runTask(gitURL: string, distFoler: string, projectSlug: string) {
 	const params = new RunTaskCommand({
 		cluster: getAWS_ECS_CLUSTER(),
 		taskDefinition: getAWS_ECS_TASK_DEFINITION(),
@@ -25,7 +25,7 @@ export async function runTask(gitURL: string, projectSlug: string) {
 			awsvpcConfiguration: {
 				assignPublicIp: 'ENABLED',
 				subnets: getAWS_ECS_SUBNETS_SG().subnets,
-				securityGroups: getAWS_ECS_SUBNETS_SG().securityGroups
+				securityGroups: getAWS_ECS_SUBNETS_SG().securityGroups,
 			},
 		},
 		overrides: {
@@ -34,6 +34,7 @@ export async function runTask(gitURL: string, projectSlug: string) {
 					name: 'builder-image',
 					environment: [
 						{ name: 'GIT_REPOSITORY__URL', value: gitURL },
+						{ name: 'DIST_FOLDER', value: distFoler },
 						{ name: 'PROJECT_ID', value: projectSlug },
 					],
 				},

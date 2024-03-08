@@ -61,3 +61,24 @@ export function getAWS_ECS_SUBNETS_SG() {
 	return {subnets:process.env.AWS_ECS_SUBNETS.split(','), securityGroups:process.env.AWS_ECS_SECURITY_GROUP.split(',')};
 }
 
+
+export function getRedisHost(){
+	if (process.env.REDIS_HOST == undefined || process.env.REDIS_HOST == '') {
+		throw new Error('REDIS_HOST is not defined');
+	}
+	return process.env.REDIS_HOST;
+}
+
+export function getRedisPort(){
+	if (process.env.REDIS_PORT == undefined || process.env.REDIS_PORT == '') {
+		throw new Error('REDIS_PORT is not defined');
+	}
+	return parseInt(process.env.REDIS_PORT);
+}
+
+export function getRedisPassword(){
+	if (process.env.REDIS_PASSWORD == undefined || process.env.REDIS_PASSWORD == '') {
+		throw new Error('REDIS_PASSWORD is not defined');
+	}
+	return process.env.REDIS_PASSWORD;
+}
