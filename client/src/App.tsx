@@ -9,6 +9,7 @@ interface FormData {
 
 interface Data {
   url?: string;
+  projectSlug?: string;
 }
 
 const outputOptions: string[] = ['dist', 'build', 'public', 'out'];
@@ -103,7 +104,7 @@ function App() {
 				</div>
 
 				<div className=" pl-10 w-1/2 ">
-					<Log />
+					<Log slug={data.projectSlug} />
 				</div>
 			</div>
 		</div>
