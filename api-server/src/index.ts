@@ -5,6 +5,7 @@ import { runTask } from './utils/ecs-client';
 import { redis } from './utils/redis-util';
 import { Server } from 'socket.io';
 import dist from '@redis/search';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ const SOCKET_PORT = 9002;
 const SERVER_PORT = 9000;
 
 const io = new Server({ cors: { origin: '*' } });
-
+app.use(cors());
 io.on('connection', (socket) => {
 	socket.on('subscribe', (channel) => {
 		socket.join(channel);
