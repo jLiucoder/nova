@@ -7,6 +7,10 @@ interface FormData {
 	distFolder: string;
 }
 
+interface Data {
+  url?: string;
+}
+
 const outputOptions: string[] = ['dist', 'build', 'public', 'out'];
 
 function App() {
@@ -14,7 +18,7 @@ function App() {
 		gitURL: '',
 		distFolder: '',
 	});
-	const [data, setData] = useState({});
+	const [data, setData] = useState<Data>({});
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
