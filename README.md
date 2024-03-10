@@ -1,5 +1,9 @@
 demo: https://drive.google.com/file/d/1f0GsbI6e1q4FyJVUPIZj1CMEGBosYzDL/view?usp=sharing
 
+Architecture:
+![Architecture](https://github.com/jLiucoder/nova-vercelClone/blob/main/nova-architecture.png)
+
+
 set up instruction:
 
 1. Go to terraform folder and create a provider file called variable.tf, fill it in like this
