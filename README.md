@@ -1,6 +1,6 @@
 demo: https://drive.google.com/file/d/1f0GsbI6e1q4FyJVUPIZj1CMEGBosYzDL/view?usp=sharing
 
-Architecture:
+Architecture and workflow:
 ![Architecture](https://github.com/jLiucoder/nova-vercelClone/blob/main/nova-architecture.png)
 
 
