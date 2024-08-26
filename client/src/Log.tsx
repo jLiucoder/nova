@@ -6,7 +6,7 @@ const Log = (props: {slug:string}) => {
 	const [messages, setMessages] = useState<string[]>(['Your logs will appear here']);
 	const slug = props.slug;
 	useEffect(() => {
-			// Replace 'yourChannelName' with the actual channel name you want to subscribe to
+			
 			socket.emit('subscribe', `logs:${slug}`);
 
 			socket.on('message', (message) => {
